@@ -1,0 +1,87 @@
+team:
+  name: "Epsilon Infinity"
+  track: "AI"
+  lead:
+    name: "Praveen"
+    email: ""
+  members:
+    - name: ""
+      email: ""
+    - name: ""
+      email: ""
+    - name: ""
+      email: ""
+
+submission:
+  title: "EvidencePro — AI-Assisted Forensic Evidence Triage"
+
+  problem_statement: >
+    Forensic investigators at crime scenes must decide which evidence items to
+    submit to a Forensic Science Laboratory (FSL) first — but without AI support,
+    these decisions are informal, inconsistent, and prone to overlooking
+    time-sensitive degradable evidence. Delayed processing of high-value
+    perishable evidence (biological, toxicological) can compromise prosecutions
+    and result in evidence loss that cannot be recovered.
+
+  solution_summary: >
+    EvidencePro is a Streamlit-based AI-assisted triage platform that helps
+    investigators classify, prioritise, and schedule forensic evidence
+    submissions to the FSL. Three ML models (Decision Tree, Random Forest,
+    Gradient Boosting) assess each evidence item across four forensic
+    dimensions (PDES: Probative value, Degradation risk, Exclusionary power,
+    processing Speed), produce transparent explanations, flag degrading evidence
+    as urgent, and generate a deterministic three-batch FSL examination schedule.
+    An optional watsonx.ai NLP extraction layer pre-fills form fields from
+    free-text evidence descriptions. All AI outputs are recommendations only —
+    the investigator accepts or overrides every decision before the report is
+    generated.
+
+  key_features:
+    - "Three-model ML triage (Decision Tree, Random Forest, Gradient Boosting) with cross-validated accuracy and per-item explanations"
+    - "IBM watsonx.ai NLP extraction — free-text evidence description auto-populates structured form fields (graceful heuristic fallback without API key)"
+    - "Deterministic FSL batch scheduler (Batch 1: Immediate / Batch 2: Secondary / Batch 3: Archive) with transparent rule documentation"
+    - "Human-in-the-loop review — investigator accepts or overrides every AI recommendation with a mandatory recorded reason"
+    - "Optional PDES policy layer with role-based governance (Policy Admin proposes, Approver must approve before activation)"
+
+  tech_stack:
+    languages: ["Python 3.10+"]
+    frameworks: ["Streamlit", "scikit-learn", "pandas", "numpy"]
+    ibm_technologies: ["IBM watsonx.ai (granite-13b-instruct-v2, optional)", "IBM Bob"]
+    databases: []
+    other: ["python-dotenv", "pytest"]
+
+  what_we_are_most_proud_of: >
+    The human-in-the-loop architecture: every AI recommendation is clearly
+    labelled as a recommendation, the investigator must explicitly accept or
+    override each one (with a mandatory recorded reason), and the system
+    maintains an audit trail through the generated report. The explainability
+    layer is also distinctive — Decision Tree predictions show the actual
+    per-item decision path (node by node), while Random Forest and Gradient
+    Boosting show the item's own feature values alongside global model-level
+    importances, with a clear disclaimer that global importances are NOT
+    per-item causal explanations. This transparency design directly addresses
+    the trust and accountability requirements for forensic use cases.
+
+  known_limitations: >
+    The ML models are trained on a 148-row synthetic/demonstration dataset;
+    cross-validated accuracy figures (DT ~80%, RF ~84%, GB ~84%) are
+    demonstrative only and do not represent real-world forensic performance.
+    Session state is lost on page refresh (Streamlit prototype limitation — no
+    persistent database). Role selection in the Policy Admin tab is a
+    simulation only with no real authentication. watsonx.ai NLP extraction
+    requires a valid IBM Cloud API key and project ID; without credentials the
+    system falls back to heuristic keyword extraction. PDES policy weights are
+    a configurable prototype mechanism, not peer-reviewed forensic standards.
+
+# =============================================================================
+# ARTIFACT LOCATIONS
+# These paths are relative to the repo root. Only change if you moved files.
+# =============================================================================
+artifacts:
+  source_code: "src/"
+  setup_guide: "docs/setup-guide.md"
+  architecture_doc: "docs/architecture.md"
+  demo_video: "demo/demo-video-link.txt"
+  live_demo: "demo/live-demo-url.txt"
+  screenshots: "demo/screenshots/"
+  presentation: "presentation/"
