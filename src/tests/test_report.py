@@ -29,7 +29,7 @@ from models.evidence_item import EvidenceItem, CaseContext
 from models.triage_models import TriageResult
 from models.policy import TriagePolicy
 from scheduler import ScheduledItem, BATCH_IMMEDIATE, BATCH_ARCHIVE
-from report import ReportData, generate_report
+from report import ReportData, generate_report, generate_pdf_report, generate_pdf_from_md, REPORTLAB_AVAILABLE
 from models.triage_models import DATA_DISCLAIMER
 
 
@@ -278,3 +278,42 @@ class TestOverridesInReport:
         md = generate_report(report_data_no_policy)
         # R002 was overridden to High
         assert "High" in md
+
+
+# ---------------------------------------------------------------------------
+# PDF report tests (appended to existing test_report.py)
+# ---------------------------------------------------------------------------
+
+class TestGeneratePdfReport:
+    def test_reportlab_available_is_bool(self):
+        assert isinstance(REPORTLAB_AVAILABLE, bool)
+
+    @pytest.mark.skipif(not REPORTLAB_AVAILABLE, reason="ReportLab not installed")
+    def test_pdf_returns_bytes(self, report_data_no_policy):
+        pdf = generate_pdf_report(report_data_no_policy)
+        assert isinstance(pdf, bytes)
+        assert len(pdf) > 100
+
+    @pytest.mark.skipif(not REPORTLAB_AVAILABLE, reason="ReportLab not installed")
+    def test_pdf_starts_with_pdf_magic(self, report_data_no_policy):
+        pdf = generate_pdf_report(report_data_no_policy)
+        assert pdf[:4] == b"%PDF"
+
+    @pytest.mark.skipif(not REPORTLAB_AVAILABLE, reason="ReportLab not installed")
+    def test_pdf_with_policy(self, report_data_with_policy):
+        pdf = generate_pdf_report(report_data_with_policy)
+        assert isinstance(pdf, bytes)
+        assert len(pdf) > 100
+
+    def test_pdf_returns_none_gracefully_when_unavailable(self, report_data_no_policy):
+        """generate_pdf_report must never raise — returns None when ReportLab missing."""
+        # We test the fallback path: if not available, result is None, not exception
+        if not REPORTLAB_AVAILABLE:
+            result = generate_pdf_report(report_data_no_policy)
+            assert result is None
+
+    def test_markdown_report_works_when_pdf_fails(self, report_data_no_policy):
+        """Markdown report must work regardless of PDF availability."""
+        md = generate_report(report_data_no_policy)
+        assert isinstance(md, str)
+        assert len(md) > 100

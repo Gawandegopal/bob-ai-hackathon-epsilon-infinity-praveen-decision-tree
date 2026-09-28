@@ -4,7 +4,22 @@ numpy
 streamlit>=1.32.0
 python-dotenv
 markdown
+reportlab
+
+# PDF generation alternatives (xhtml2pdf is a fallback if reportlab is unavailable)
 xhtml2pdf
+
+# Optional — document upload and OCR via Docling.
+# The application works fully without Docling (falls back to pymupdf, pdfplumber, or manual entry).
+# Install with: pip install docling
+# docling
+
+# Optional — PDF text extraction fallbacks (used if Docling is not available)
+# pip install pymupdf  (PyMuPDF, provides 'fitz')
+# pip install pdfplumber
+
+# Optional — DOCX text extraction fallback
+# pip install python-docx
 
 # Optional — AI/NLP evidence extraction via IBM watsonx.ai.
 # The application works fully without this package (falls back to heuristic
